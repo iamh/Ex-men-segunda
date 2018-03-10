@@ -75,7 +75,6 @@
         totalPomodoros: 'getTotalPomodoros',
         workouts: 'getWorkouts',
         authenticated: 'isAuthenticated',
-        userWorkouts: 'getUserWorkouts',
         user: 'getUser'
       }),
       time () {
@@ -108,9 +107,16 @@
       ClipLoader
     },
     methods: {
-      ...mapActions(['updateTotalPomodoros', 'setMoreWorkout']),
+      ...mapActions(['updateTotalPomodoros', 'updateStaticsWorkouts']),
       getRandomWorkout () {
-        return this.workouts[Math.floor(Math.random() * this.workouts.length)]
+        const workoutAtTheMoment = this.workouts[Math.floor(Math.random() * this.workouts.length)]
+        const workoutData = {
+          uid: this.user.uid,
+          workout: workoutAtTheMoment,
+          sec: this.config.workingPomodoro * 60
+        }
+        this.updateStaticsWorkouts(workoutData)
+        return workoutAtTheMoment
       },
       togglePomodoro () {
         beep()

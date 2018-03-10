@@ -48,5 +48,8 @@ export default {
   },
   setLoading (state, loading) {
     state.loading = {...state.loading, ...loading}
+  },
+  setPomodoroStatics (state, value) {
+    state.pomodoroStatics = value
   }
 }
