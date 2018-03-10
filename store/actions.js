@@ -42,6 +42,7 @@ export default {
     workout.uid = state.user.uid
     workout.date = Date.now()
     workout.rate = 0
+    workout.pomodoros = 0
     // Get a key for a new Workout.
     let newWorkoutKey = state.workoutsRef.push().key
 
@@ -73,6 +74,13 @@ export default {
       commit('setPomodoro', set, value)
     }
   },
+
+  setMoreWorkout ({commit, state}, info) {
+    let db = firebaseApp.database()
+    let moreWorkout = db.ref(`/user-workouts/` + info.user)
+    moreWorkout.child(info.key).set(info.pomodoro)
+  },
+
   /**
    * Updates the total pomodoro number
    * @param {object} store
@@ -81,41 +89,10 @@ export default {
   updateTotalPomodoros ({state}, totalPomodoros) {
     state.statisticsRef.update({totalPomodoros: totalPomodoros})
   },
-  updateStaticsWorkouts ({commit}, workoutData) {
+  updatePomodoro ({state}, info) {
     let db = firebaseApp.database()
-    let workouts = db.ref(`/statistics/${workoutData.uid}/workouts/${workoutData.workout['.key']}`)
-    workouts.once('value', function (snapshot) {
-      if (snapshot.val()) {
-        workouts.child('totalPomodoros').set(snapshot.val().totalPomodoros + 1)
-        workouts.child('time').set(snapshot.val().time + workoutData.sec)
-      } else {
-        workouts.child('totalPomodoros').set(1)
-        workouts.child('time').set(workoutData.sec)
-        workouts.child('name').set(workoutData.workout.name)
-      }
-      var today = new Date()
-      var hh = today.getHours()
-      var min = today.getMinutes()
-      var sec = today.getSeconds()
-      var dd = today.getDate()
-      var mm = today.getMonth() + 1
-      var yyyy = today.getFullYear()
-      if (dd < 10) {
-        dd = '0' + dd
-      }
-      if (mm < 10) {
-        mm = '0' + mm
-      }
-      today = dd + '/' + mm + '/' + yyyy + '-' + hh + ':' + min + ':' + sec
-      workouts.child(`/date/`).push(today)
-    })
-  },
-  readWorkoutsStatics ({commit}, uid) {
-    let db = firebaseApp.database()
-    let workouts = db.ref(`/statistics/${uid}/workouts/`)
-    workouts.on('value', function (snapshot) {
-      commit('setPomodoroStatics', snapshot.val())
-    })
+    let userPomodoros = db.ref(`/user-workouts` + info.key)
+    userPomodoros.update({pomodoros: info.pomodoro})
   },
   /**
    * Creates a new user with given email and password and stores it in the firebase database

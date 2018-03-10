@@ -11,7 +11,6 @@ const statisticsRef = null
 const workoutsRef = null
 const userWorkouts = null
 const displayName = ''
-const pomodoroStatics = null
 
 const statistics = {
   pomodorosToday: 0,
@@ -35,7 +34,6 @@ export default {
   displayName,
   workouts: [],
   authError: '',
-  pomodoroStatics,
   todos: [
     {
       description: 'Start using ToDo list',
