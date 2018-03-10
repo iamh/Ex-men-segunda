@@ -42,7 +42,6 @@ export default {
     workout.uid = state.user.uid
     workout.date = Date.now()
     workout.rate = 0
-    workout.pomodoros = 0
     // Get a key for a new Workout.
     let newWorkoutKey = state.workoutsRef.push().key
 
@@ -74,13 +73,6 @@ export default {
       commit('setPomodoro', set, value)
     }
   },
-
-  setMoreWorkout ({commit, state}, info) {
-    let db = firebaseApp.database()
-    let moreWorkout = db.ref(`/user-workouts/` + info.user)
-    moreWorkout.child(info.key).set(info.pomodoro)
-  },
-
   /**
    * Updates the total pomodoro number
    * @param {object} store
@@ -89,10 +81,21 @@ export default {
   updateTotalPomodoros ({state}, totalPomodoros) {
     state.statisticsRef.update({totalPomodoros: totalPomodoros})
   },
-  updatePomodoro ({state}, info) {
-    let db = firebaseApp.database()
-    let userPomodoros = db.ref(`/user-workouts` + info.key)
-    userPomodoros.update({pomodoros: info.pomodoro})
+  saveWorkoutStats ({state}, {workout, time}) {
+    state.statisticsRef.child('workouts/' + workout['.key']).transaction(wk => {
+      if (!wk) {
+        wk = {
+          name: workout.name,
+          count: 0,
+          time: 0,
+          date: []
+        }
+      }
+      wk.count += 1
+      wk.time += time
+      wk.date.push(Date.now())
+      return wk
+    })
   },
   /**
    * Creates a new user with given email and password and stores it in the firebase database
