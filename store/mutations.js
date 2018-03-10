@@ -48,5 +48,8 @@ export default {
   },
   setLoading (state, loading) {
     state.loading = {...state.loading, ...loading}
+  },
+  setWorkoutStats (state, value) {
+    state.workoutStats = value
   }
 }

@@ -4,7 +4,7 @@
     <div class="container min-full-height">
       <div class="main-content row">
         <div class="col-sm-12">
-          <h2 class="title">Statistics</h2>
+          <h2 class="title">Your statistics - {{user.displayName}}</h2>
           <p>Total Pomodoros: {{totalPomodoros}}</p>
         </div>
       </div>
@@ -14,17 +14,24 @@
 </template>
 <script>
   import { HeaderComponent, FooterComponent } from '~/components/common'
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapActions} from 'vuex'
   export default {
     middleware: 'authenticated',
     computed: {
       ...mapGetters({
-        totalPomodoros: 'getTotalPomodoros'
+        totalPomodoros: 'getTotalPomodoros',
+        user: 'getUser'
       })
     },
     components: {
       HeaderComponent,
       FooterComponent
+    },
+    methods: {
+      ...mapActions(['readWorkoutStats'])
+    },
+    mounted () {
+      this.readWorkoutStats()
     }
   }
 </script>

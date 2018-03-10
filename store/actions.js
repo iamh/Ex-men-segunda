@@ -97,6 +97,11 @@ export default {
       return wk
     })
   },
+  readWorkoutStats ({state, commit}) {
+    state.statisticsRef.child('workouts/').on('value', function (snapshot) {
+      commit('setWorkoutStats', snapshot.val())
+    })
+  },
   /**
    * Creates a new user with given email and password and stores it in the firebase database
    * @param {object} store
