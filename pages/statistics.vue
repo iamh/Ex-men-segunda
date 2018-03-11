@@ -1,10 +1,11 @@
 <template>
   <div>
     <header-component></header-component>
+    <modal-component :details="dates"></modal-component>
     <div class="container min-full-height">
       <div class="main-content row">
         <div class="col-sm-12">
-          <h2 class="title">Your statistics - {{user.displayName}}</h2>
+          <h2 class="title">Your statistics - {{user.displayName}} </h2>
           <p>Total Pomodoros: {{totalPomodoros}}</p>
         </div>
         <div class="content">
@@ -14,6 +15,9 @@
             :key="key"
             :style="{background: index % 2 === 0 ? 'lightgrey' : 'darkgrey'}"
             :getWidth="getWidth(date.count)"
+            @click="upDate(date)"
+            data-toggle="modal" 
+            data-target="#exampleModal"
           >
             <div 
               class="progress-bar"
@@ -32,12 +36,14 @@
 </template>
 <script>
   import { HeaderComponent, FooterComponent } from '~/components/common'
+  import { ModalComponent } from '~/components/workouts'
   import {mapGetters, mapActions} from 'vuex'
   export default {
     data () {
       return {
         colors: ['red', 'blue', 'green', 'brown'],
-        max: 0
+        max: 0,
+        dates: ''
       }
     },
     middleware: 'authenticated',
@@ -50,7 +56,8 @@
     },
     components: {
       HeaderComponent,
-      FooterComponent
+      FooterComponent,
+      ModalComponent
     },
     methods: {
       ...mapActions(['readWorkoutStats']),
@@ -58,11 +65,13 @@
         if (n >= this.max) {
           this.max = n
         }
+      },
+      upDate (d) {
+        this.dates = d
       }
     },
     mounted () {
       this.readWorkoutStats()
-      console.log(this.index)
     }
   }
 </script>
